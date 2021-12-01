@@ -1,0 +1,1 @@
+enum TabState {counter, todos, networkCalls, musicVideos }
