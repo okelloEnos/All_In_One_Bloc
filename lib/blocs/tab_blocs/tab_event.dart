@@ -14,7 +14,6 @@ class TabUpdated extends TabEvent{
 
   @override
   String toString() {
-
     return 'TabUpdated { tab: $tab }';
   }
 }
