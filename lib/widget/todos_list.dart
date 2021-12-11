@@ -1,7 +1,10 @@
+import 'package:all_in_one/blocs/todos_bloc/todos.dart';
 import 'package:all_in_one/model/todo.dart';
 import 'package:all_in_one/screens/todos/todo_detail.dart';
+import 'package:all_in_one/widget/delete_snackbar.dart';
 import 'package:all_in_one/widget/separating_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TodosList extends StatelessWidget {
   final List<Todo> todos;
@@ -31,12 +34,37 @@ class TodoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    return GestureDetector(
-      onTap: (){
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) => TodoDetail(todoItem: todoItem)));
+    return Dismissible(
+      key: UniqueKey(),
+      onDismissed: (direction){
+        BlocProvider.of<TodosBloc>(context).add(TodosDeleted(todoItem));
+        ScaffoldMessenger.of(context).showSnackBar(
+            DeleteTodoSnackBar(todo: todoItem, onUndo: () => BlocProvider.of<TodosBloc>(context).add(
+                TodosAdded(Todo(
+                    title: todoItem.title,
+                    description: todoItem.description,
+                    isCompleted: todoItem.isCompleted,
+                    taskId: ''))
+            )));
       },
       child: ListTile(
+        onTap: () async {
+          final Todo? removedTodo = await Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+            return TodoDetail(todoItem: todoItem);
+          }));
+
+          if (removedTodo != null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+                DeleteTodoSnackBar(todo: removedTodo,
+                    onUndo: () =>  BlocProvider.of<TodosBloc>(context).add(
+                    TodosAdded(Todo(
+                        title: removedTodo.title,
+                        description: removedTodo.description,
+                        isCompleted: removedTodo.isCompleted,
+                        taskId: ''))
+                )));
+          }
+        },
         title: Text(todoItem.title),
         subtitle: Text(todoItem.description),
         leading: todoItem.isCompleted
@@ -55,7 +83,9 @@ class TodoCard extends StatelessWidget {
             fillColor: MaterialStateProperty.all(Colors.blue),
             side: const BorderSide(color: Colors.blue),
             value: todoItem.isCompleted,
-            onChanged: null),
+            onChanged: (_) => BlocProvider.of<TodosBloc>(context)
+              ..add(TodosUpdated(
+                  todoItem.copyWith(isCompleted: !todoItem.isCompleted)))),
       ),
     );
   }

@@ -32,11 +32,11 @@ class AllInOneApp extends StatelessWidget {
           return CounterBloc();
         },
         ),
-        BlocProvider<TodosBloc>(
-          create: (BuildContext context){
-            return TodosBloc()..add(TodosLoaded());
-          },
-        ),
+        // BlocProvider<TodosBloc>(
+        //   create: (BuildContext context){
+        //     return TodosBloc()..add(TodosLoaded());
+        //   },
+        // ),
       ],
         child: const BottomNavigationScreen(),),
     );
