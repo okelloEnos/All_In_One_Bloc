@@ -41,6 +41,9 @@ dev_dependencies:
   bloc: ^8.0.0
   flutter_bloc: ^8.0.0
   equatable: ^2.0.3
+  http: ^0.13.4
+  bloc_concurrency: ^0.2.0
+  stream_transform: ^2.0.0
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
